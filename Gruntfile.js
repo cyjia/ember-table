@@ -16,7 +16,7 @@ module.exports = function (grunt) {
     pkg: grunt.file.readJSON('package.json'),
     banner: '/*!\n* <%=pkg.name %> v<%=pkg.version%>\n' +
             '* Copyright 2012-<%=grunt.template.today("yyyy")%> Addepar Inc.\n' +
-            '* See LICENSE.md.\n*/',
+            '* See LICENSE.md\n*/',
 
     broccoli: {
       dist: {
@@ -26,6 +26,7 @@ module.exports = function (grunt) {
     },
 
     replace: {
+      // The VERSION file for easy reference of the current version
       global_version: {
         src: ['VERSION'],
         overwrite: true,
@@ -34,6 +35,8 @@ module.exports = function (grunt) {
           to: '<%=pkg.version%>'
         }]
       },
+      // On the project homepage, there is a reference to the CHANGELOG and
+      // listing of the project's current version.
       overview_page: {
         src: ['tests/dummy/app/templates/overview.hbs'],
         overwrite: true,

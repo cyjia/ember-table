@@ -4,14 +4,15 @@ import ColumnDefinition from 'ember-table/models/column-definition';
 export default Ember.Controller.extend({
   // TODO(azirbel): Don't use setInterval in an Ember application
   init: function() {
+    // TODO(azirbel): Call this._super()
     var _this = this;
     setInterval(function() {
-      return _this.get('tableContent').forEach(function(item) {
+      _this.get('tableContent').forEach(function(item) {
         item.set('value1', _this.getNextValue(item.get('value1')));
         item.set('value2', _this.getNextValue(item.get('value2')));
         item.set('value3', _this.getNextValue(item.get('value3')));
         item.set('value4', _this.getNextValue(item.get('value4')));
-        return item.set('value5', _this.getNextValue(item.get('value5')));
+        item.set('value5', _this.getNextValue(item.get('value5')));
       });
     }, 1500);
   },

@@ -14,6 +14,6 @@ RegisterTableComponentMixin, {
   scrollTop: null,
 
   onScrollLeftDidChange: Ember.observer(function() {
-    return this.$().scrollLeft(this.get('scrollLeft'));
-  }).observes('scrollLeft')
+    this.$().scrollLeft(this.get('scrollLeft'));
+  }, 'scrollLeft')
 });

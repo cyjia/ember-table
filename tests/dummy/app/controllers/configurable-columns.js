@@ -22,7 +22,7 @@ export default Ember.Controller.extend({
   }.property('isFluid'),
 
   updateDemoTableWidth: function(newWidth) {
-    return this.set('demoTableWidth', newWidth);
+    this.set('demoTableWidth', newWidth);
   },
 
   columns: Ember.computed(function() {

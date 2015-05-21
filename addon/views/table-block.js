@@ -13,7 +13,7 @@ StyleBindingsMixin, RegisterTableComponentMixin, {
   scrollLeft: null,
 
   onScrollLeftDidChange: Ember.observer(function() {
-    return this.$().scrollLeft(this.get('scrollLeft'));
+    this.$().scrollLeft(this.get('scrollLeft'));
   }, 'scrollLeft'),
 
   height: Ember.computed(function() {

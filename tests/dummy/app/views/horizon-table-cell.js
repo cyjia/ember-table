@@ -15,11 +15,12 @@ export default TableCell.extend({
 
   onWidthDidChange: Ember.observer(function() {
     this.$('svg').remove();
-    return this.renderD3View();
-  }).observes('width'),
+    this.renderD3View();
+  }, 'width'),
 
   didInsertElement: function() {
-    return this.onWidthDidChange();
+    this.onWidthDidChange();
+    // TODO(azirbel): Add _this.super()
   },
 
   renderD3View: function() {
@@ -29,7 +30,7 @@ export default TableCell.extend({
     data = this.get('horizonContent');
     chart = d3HorizonUtils.d3Horizon().width(width).height(height).bands(2).mode('mirror').interpolate('basis');
     svg = d3.select('#' + this.get('elementId')).append('svg').attr('width', width).attr('height', height);
-    return svg.data([data]).call(chart);
+    svg.data([data]).call(chart);
   }
 });
 

@@ -71,11 +71,11 @@
     <div class="col-md-12 bumper-30">
       <h3>Template</h3>
       <div class="highlight">
-<pre class="lang-html">&#123;&#123;table-component
+<pre class="prettyprint lang-html">&#123;&#123;table-component
   hasFooter=false
-  columns=columns
-  content=content{{#if isFluid}}
-  columnMode='fluid'{{/if}}
+  columns=tableColumns
+  content=tableContent{{#if isFluid}}
+  columnMode="fluid"{{/if}}
 &#125;&#125;</pre>
       </div>
     </div>
@@ -83,33 +83,29 @@
     <div class="col-md-12 bumper-30">
       <h3>Controller</h3>
       <div class="highlight">
-<pre class="lang-coffee">App.ApplicationController = Ember.Controller.extend
-  numRows: 100
+<pre class="lang-js">
+import Ember from 'ember';
+import ColumnDefinition from 'ember-table/models/column-definition';
 
-  columns: Ember.computed -> {{#each columns}}
-    {{headerCellNameLowerCase}}Column = Ember.Table.ColumnDefinition.create{{#unless textAlignIsDefault}}
-      textAlign: '{{textAlign}}'{{/unless}}
-      headerCellName: '{{headerCellName}}'{{#unless minWidthIsDefault}}
-      minWidth: {{minWidth}}{{/unless}}{{#if maxWidth}}
-      maxWidth: {{maxWidth}}{{/if}}{{#unless isSortable}}
-      isSortable: no{{/unless}}{{#unless isResizable}}
-      isResizable: no{{/unless}}{{#if canAutoResize}}
-      canAutoResize: yes{{/if}}{{#if isDateCell}}
-      getCellContent: (row) -> row.get('date').toDateString(){{else}}
-      getCellContent: (row) -> row.get('{{headerCellNameLowerCase}}').toFixed(2){{/if}}{{/each}}
+export default Ember.Controller.extend({
+  tableColumns: Ember.computed(function() { {{#each columns}}
+{{columnDefinitionDocumentation}}{{/each}}
     [dateColumn, openColumn, highColumn, lowColumn, closeColumn]
 
-  content: Ember.computed ->
-    [0...@get('numRows')].map (index) ->
-      date = new Date()
-      date.setDate(date.getDate() + index)
-      date:  date
-      open:  Math.random() * 100 - 50
-      high:  Math.random() * 100 - 50
-      low:   Math.random() * 100 - 50
-      close: Math.random() * 100 - 50
-      volume: Math.random() * 1000000
-  .property 'numRows'</pre>
+  tableContent: Ember.computed(function() {
+    return _.range(100).map(function(index) {
+      var date = new Date();
+      date.setDate(date.getDate() + index);
+      return {
+        date: date,
+        open: Math.random() * 100 - 50,
+        high: Math.random() * 100 - 50,
+        low: Math.random() * 100 - 50,
+        close: Math.random() * 100 - 50,
+        volume: Math.random() * 1000000
+      };
+    });
+  })</pre>
       </div>
     </div>
   </div>

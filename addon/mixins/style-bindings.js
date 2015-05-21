@@ -16,10 +16,11 @@ export default Ember.Mixin.create({
     }
     return Ember.String.dasherize("" + styleName) + ":" + value + ";";
   },
-  applyStyleBindings: function() {
+  applyStyleBindings: Ember.on('init',
+    Ember.observer('styleBindings', function() {
     var lookup, properties, styleBindings, styleComputed, styles,
       _this = this;
-    styleBindings = this.styleBindings;
+    styleBindings = this.get('styleBindings');
     if (!styleBindings) {
       return;
     }
@@ -47,9 +48,5 @@ export default Ember.Mixin.create({
     });
     styleComputed.property.apply(styleComputed, properties);
     return Ember.defineProperty(this, 'style', styleComputed);
-  },
-  init: function() {
-    this.applyStyleBindings();
-    return this._super();
-  }
+  }))
 });

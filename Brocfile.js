@@ -3,9 +3,21 @@
 var EmberAddon = require('ember-cli/lib/broccoli/ember-addon');
 var fs = require('fs');
 
-// TODO(azirbel): Use something more legit
-function htmlEntities(str) {
-  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+// Escape HTML using approach in
+// http://stackoverflow.com/questions/24816/escaping-html-strings-with-jquery
+var entityMap = {
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': '&quot;',
+  "'": '&#39;',
+  "/": '&#x2F;'
+};
+
+function escapeHtml(string) {
+  return String(string).replace(/[&<>"'\/]/g, function (s) {
+    return entityMap[s];
+  });
 }
 
 var app = new EmberAddon({
@@ -19,12 +31,12 @@ var app = new EmberAddon({
       '**/*.js'
     ],
     patterns: [{
-      match: /@@{[^}]*}/g,
+      match: /@@{([^}]*)}/g,
       replacement: function(matchedText) {
         filename = matchedText.slice(3, -1);
         fullFilename = './tests/dummy/app/' + filename;
         fileContents = fs.readFileSync(fullFilename, 'utf8');
-        return htmlEntities(fileContents).replace(/\n/g, '\\n');
+        return escapeHtml(fileContents).replace(/\n/g, '\\n');
       }
     }]
   }

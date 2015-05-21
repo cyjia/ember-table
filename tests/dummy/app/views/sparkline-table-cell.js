@@ -7,11 +7,12 @@ export default TableCell.extend({
 
   onContentOrSizeDidChange: Ember.observer(function() {
     this.$('svg').remove();
-    return this.renderD3View();
-  }).observes('row', 'width'),
+    this.renderD3View();
+  }, 'row', 'width'),
 
   didInsertElement: function() {
-    return this.renderD3View();
+    this.renderD3View();
+    // TODO(azirbel): Add _this.super()
   },
 
   renderD3View: function() {
@@ -35,7 +36,7 @@ export default TableCell.extend({
     });
     var svg = d3.select('#' + (this.get('elementId'))).append('svg:svg').attr('height', h).attr('width', w);
     var g = svg.append('svg:g');
-    return g.append('svg:path').attr('d', line(data)).attr('stroke', function() {
+    g.append('svg:path').attr('d', line(data)).attr('stroke', function() {
       return fill(Math.round(Math.random()) * 10);
     }).attr('fill', 'none');
   }

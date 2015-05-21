@@ -32,19 +32,19 @@ export default Row.extend({
     }
     this.set('groupingLevel', groupingLevel);
     this.set('indentation', indentation);
-    return this.set('isShowing', isShowing);
+    this.set('isShowing', isShowing);
   },
 
   computeRowStyle: function(maxLevels) {
     var level;
     level = this.getFormattingLevel(this.get('groupingLevel'), maxLevels);
-    return this.set('rowStyle', 'ember-table-row-style-' + level);
+    this.set('rowStyle', 'ember-table-row-style-' + level);
   },
 
   recursiveCollapse: function(isCollapsed) {
     this.set('isCollapsed', isCollapsed);
-    return this.get('children').forEach(function(child) {
-      return child.recursiveCollapse(isCollapsed);
+    this.get('children').forEach(function(child) {
+      child.recursiveCollapse(isCollapsed);
     });
   },
 

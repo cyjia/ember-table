@@ -126,13 +126,7 @@ StyleBindingsMixin, ResizeHandlerMixin, {
     if (!Ember.$().antiscroll) {
       throw 'Missing dependency: antiscroll.js';
     }
-    return this.prepareTableColumns();
-  },
-
-  // TODO(azirbel): Document
-  actions: {
-    addColumn: Ember.K,
-    sortByColumn: Ember.K
+    this.prepareTableColumns();
   },
 
   height: Ember.computed.alias('_tablesContainerHeight'),
@@ -148,7 +142,7 @@ StyleBindingsMixin, ResizeHandlerMixin, {
     var columns = this.get('columns');
     columns.removeObject(column);
     columns.insertAt(numFixedColumns + newIndex, column);
-    return this.prepareTableColumns();
+    this.prepareTableColumns();
   },
 
   // An array of Ember.Table.Row computed based on `content`
@@ -178,7 +172,7 @@ StyleBindingsMixin, ResizeHandlerMixin, {
     }
     var numFixedColumns = this.get('numFixedColumns') || 0;
     return columns.slice(0, numFixedColumns) || [];
-  }).property('columns.@each', 'numFixedColumns'),
+  }).property('columns.[]', 'numFixedColumns'),
 
   tableColumns: Ember.computed(function() {
     var columns = this.get('columns');
@@ -187,7 +181,7 @@ StyleBindingsMixin, ResizeHandlerMixin, {
     }
     var numFixedColumns = this.get('numFixedColumns') || 0;
     return columns.slice(numFixedColumns, columns.get('length')) || [];
-  }).property('columns.@each', 'numFixedColumns'),
+  }).property('columns.[]', 'numFixedColumns'),
 
   prepareTableColumns: function() {
     var _this = this;
@@ -225,10 +219,10 @@ StyleBindingsMixin, ResizeHandlerMixin, {
     var antiscrollElements = this.$('.antiscroll-wrap');
     var antiscroll;
     antiscrollElements.each(function(i, antiscrollElement) {
-      antiscroll = $(antiscrollElement).data('antiscroll');
+      antiscroll = Ember.$(antiscrollElement).data('antiscroll');
       if (antiscroll) {
         antiscroll.destroy();
-        $(antiscrollElement).removeData('antiscroll');
+        Ember.$(antiscrollElement).removeData('antiscroll');
       }
     });
     this._super();
@@ -243,7 +237,7 @@ StyleBindingsMixin, ResizeHandlerMixin, {
     if (this.tableWidthNowTooSmall()) {
       this.set('columnsFillTable', true);
     }
-    return Ember.run(this, this.elementSizeDidChange);
+    Ember.run(this, this.elementSizeDidChange);
   },
 
   elementSizeDidChange: function() {
@@ -254,7 +248,7 @@ StyleBindingsMixin, ResizeHandlerMixin, {
     this.set('_height', this.$().parent().height());
     // we need to wait for the table to be fully rendered before antiscroll can
     // be used
-    return Ember.run.next(this, this.updateLayout);
+    Ember.run.next(this, this.updateLayout);
   },
 
   tableWidthNowTooSmall: function() {
@@ -275,7 +269,7 @@ StyleBindingsMixin, ResizeHandlerMixin, {
     // updating antiscroll
     this.$('.antiscroll-wrap').antiscroll().data('antiscroll').rebuild();
     if (this.get('columnsFillTable')) {
-      return this.doForceFillColumns();
+      this.doForceFillColumns();
     }
   },
 
@@ -321,8 +315,8 @@ StyleBindingsMixin, ResizeHandlerMixin, {
   },
 
   onBodyContentLengthDidChange: Ember.observer(function() {
-    return Ember.run.next(this, function() {
-      return Ember.run.once(this, this.updateLayout);
+    Ember.run.next(this, function() {
+      Ember.run.once(this, this.updateLayout);
     });
   }, 'bodyContent.length'),
 
@@ -525,7 +519,8 @@ StyleBindingsMixin, ResizeHandlerMixin, {
 
           this.get('rangeSelection').addObjects(
             this.get('bodyContent').slice(minIndex, maxIndex + 1)
-            .mapBy('content'));
+            .mapBy('content')
+          );
         } else {
           if (!event.ctrlKey && !event.metaKey) {
             this.get('persistedSelection').clear();
@@ -573,5 +568,11 @@ StyleBindingsMixin, ResizeHandlerMixin, {
       return view.get('row');
     }
     return null;
+  },
+
+  // TODO(azirbel): Document
+  actions: {
+    addColumn: Ember.K,
+    sortByColumn: Ember.K
   }
 });

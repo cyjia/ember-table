@@ -23,8 +23,8 @@ export default Ember.ArrayProxy.extend({
         return _this.createGithubEvent(row, event);
       });
     });
-    return _.range(start, end).forEach(function(index) {
-      return content[index] = Ember.Object.create({
+    _.range(start, end).forEach(function(index) {
+      content[index] = Ember.Object.create({
         eventId: index,
         isLoaded: false
       });

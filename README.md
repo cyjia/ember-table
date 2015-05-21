@@ -17,7 +17,7 @@ http://addepar.github.com/ember-table/
 
 http://emberjs.jsbin.com/xavipu/1/edit
 
-#### Installation with Ember CLI
+#### Installation with Ember CLI (Recommended)
 
 ```bash
 # ember-cli >= 0.2.0
@@ -35,9 +35,9 @@ Once it's installed, you can customize the look of ember-table with CSS.
 
 Or, just include `dist/ember-table.js` and `dist/ember-table.css` in your app.
 
-Using Ember Table with bower is **deprecated** and will eventually be removed -
-we recommend that you migrate your apps to Ember CLI! Documentation has been
-updated to show Ember CLI usage; if you need documentation for globals-based
+Using Ember Table with bower is **deprecated** and will eventually be removed.
+We recommend that you migrate your apps to Ember CLI! Documentation has been
+updated to show Ember CLI usage. If you need documentation for globals-based
 use, please check out version 0.4.1 of Ember Table and follow the setup
 instructions under "Running Old Versions" to display the old guides.
 
@@ -70,7 +70,8 @@ development uses grunt and node rather than `ember serve`:
 
 ```bash
 $ npm install -g grunt-cli
-$ npm install && bower install
+$ npm install
+$ bower install
 $ grunt
 $ node examples.js              # run the demo app
 ```

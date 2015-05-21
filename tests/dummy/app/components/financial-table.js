@@ -161,9 +161,9 @@ export default TableComponent.extend({
 
   computeStyles: function(parent, node) {
     node.computeStyles(parent);
-    return node.get('children').forEach((function(_this) {
+    node.get('children').forEach((function(_this) {
       return function(child) {
-        return _this.computeStyles(node, child);
+        _this.computeStyles(node, child);
       };
     })(this));
   },
@@ -183,8 +183,8 @@ export default TableComponent.extend({
 
     toggleCollapse: function(row) {
       row.toggleProperty('isCollapsed');
-      return Ember.run.next(this, function() {
-        return this.notifyPropertyChange('rows');
+      Ember.run.next(this, function() {
+        this.notifyPropertyChange('rows');
       });
     }
   },

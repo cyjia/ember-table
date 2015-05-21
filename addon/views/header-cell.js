@@ -62,7 +62,7 @@ StyleBindingsMixin, RegisterTableComponentMixin, {
   // jQuery UI resizable option
   resizableOption: Ember.computed(function() {
     return {
-      handles: 'e',
+      handles: 'e', // Show the "east"/"right" handle
       // We need about 10px as absolute minimums for the columns
       minWidth: Math.max(this.get('effectiveMinWidth') || 0, 10),
       maxWidth: this.get('effectiveMaxWidth'),
@@ -74,6 +74,7 @@ StyleBindingsMixin, RegisterTableComponentMixin, {
   }).property('effectiveMinWidth', 'effectiveMaxWidth'),
 
   didInsertElement: function() {
+    // TODO(azirbel): Call this._super()
     this.elementSizeDidChange();
     this.recomputeResizableHandle();
   },
@@ -121,27 +122,27 @@ StyleBindingsMixin, RegisterTableComponentMixin, {
     Ember.$('.ember-table-header-block .ember-table-content').each(function() {
       var thisHeight = Ember.$(this).outerHeight();
       if (thisHeight > maxHeight) {
-        return maxHeight = thisHeight;
+        maxHeight = thisHeight;
       }
     });
-    return this.set('tableComponent._contentHeaderHeight', maxHeight);
+    this.set('tableComponent._contentHeaderHeight', maxHeight);
   },
 
   cellWidthDidChange: Ember.observer(function() {
-    return Ember.run.schedule('afterRender', this, this.elementSizeDidChange);
+    Ember.run.schedule('afterRender', this, this.elementSizeDidChange);
   }, 'width'),
 
   resizableObserver: Ember.observer(function() {
-    return this.recomputeResizableHandle();
+    this.recomputeResizableHandle();
   }, 'resizableOption', 'column.isResizable', 'tableComponent.columnMode',
       'nextResizableColumn'),
 
   recomputeResizableHandle: function() {
     if (this.get('_isResizable')) {
-      return this.$().resizable(this.get('resizableOption'));
+      this.$().resizable(this.get('resizableOption'));
     } else {
       if (this.$().is('.ui-resizable')) {
-        return this.$().resizable('destroy');
+        this.$().resizable('destroy');
       }
     }
   }

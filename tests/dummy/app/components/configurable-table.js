@@ -7,7 +7,7 @@ import TableComponent from 'ember-table/components/ember-table';
 // when its width has changed.
 export default TableComponent.extend({
   layoutName: 'components/ember-table',
-  parentWidthObserver: Ember.computed(function() {
+  parentWidthObserver: Ember.observer(function() {
     return this.onResizeEnd();
-  }).property('parentWidth')
+  }, 'parentWidth')
 });

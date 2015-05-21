@@ -11,19 +11,20 @@ export default TableCell.extend({
     typeBinding: 'parentView.type',
     valueBinding: 'parentView.cellContent',
     didInsertElement: function() {
-      return this.$().focus();
+      this.$().focus();
+      // TODO(azirbel): Call this._super()
     },
     focusOut: function() {
-      return this.set('parentView.isEditing', false);
+      this.set('parentView.isEditing', false);
     }
   }),
 
   onRowContentDidChange: Ember.observer(function() {
-    return this.set('isEditing', false);
-  }).observes('row.content'),
+    this.set('isEditing', false);
+  }, 'row.content'),
 
   click: function(event) {
     this.set('isEditing', true);
-    return event.stopPropagation();
+    event.stopPropagation();
   }
 });

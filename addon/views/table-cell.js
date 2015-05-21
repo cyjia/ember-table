@@ -20,7 +20,7 @@ StyleBindingsMixin, {
   init: function() {
     this._super();
     this.contentPathDidChange();
-    return this.contentDidChange();
+    this.contentDidChange();
   },
 
   row: Ember.computed.alias('parentView.row'),
@@ -28,24 +28,24 @@ StyleBindingsMixin, {
   width: Ember.computed.alias('column.width'),
 
   contentDidChange: function() {
-    return this.notifyPropertyChange('cellContent');
+    this.notifyPropertyChange('cellContent');
   },
 
   contentPathWillChange: Ember.beforeObserver(function() {
     var contentPath = this.get('column.contentPath');
     if (contentPath) {
-      return this.removeObserver("row." + contentPath, this,
+      this.removeObserver("row." + contentPath, this,
           this.contentDidChange);
     }
-  }).observes('column.contentPath'),
+  }, 'column.contentPath'),
 
   contentPathDidChange: Ember.beforeObserver(function() {
     var contentPath = this.get('column.contentPath');
     if (contentPath) {
-      return this.addObserver("row." + contentPath, this,
+      this.addObserver("row." + contentPath, this,
           this.contentDidChange);
     }
-  }).observes('column.contentPath'),
+  }, 'column.contentPath'),
 
   cellContent: Ember.computed(function(key, value) {
     var row = this.get('row');
