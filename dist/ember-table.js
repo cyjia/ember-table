@@ -1,7 +1,7 @@
 /*!
 * ember-table v0.4.1
 * Copyright 2012-2015 Addepar Inc.
-* See LICENSE.md.
+* See LICENSE.md
 */
 (function(){;
 var define, requireModule, require, requirejs;
@@ -247,13 +247,7 @@ var define, requireModule, require, requirejs;
         if (!Ember.$().antiscroll) {
           throw 'Missing dependency: antiscroll.js';
         }
-        return this.prepareTableColumns();
-      },
-
-      // TODO(azirbel): Document
-      actions: {
-        addColumn: Ember.K,
-        sortByColumn: Ember.K
+        this.prepareTableColumns();
       },
 
       height: Ember.computed.alias('_tablesContainerHeight'),
@@ -269,7 +263,7 @@ var define, requireModule, require, requirejs;
         var columns = this.get('columns');
         columns.removeObject(column);
         columns.insertAt(numFixedColumns + newIndex, column);
-        return this.prepareTableColumns();
+        this.prepareTableColumns();
       },
 
       // An array of Ember.Table.Row computed based on `content`
@@ -299,7 +293,7 @@ var define, requireModule, require, requirejs;
         }
         var numFixedColumns = this.get('numFixedColumns') || 0;
         return columns.slice(0, numFixedColumns) || [];
-      }).property('columns.@each', 'numFixedColumns'),
+      }).property('columns.[]', 'numFixedColumns'),
 
       tableColumns: Ember.computed(function() {
         var columns = this.get('columns');
@@ -308,7 +302,7 @@ var define, requireModule, require, requirejs;
         }
         var numFixedColumns = this.get('numFixedColumns') || 0;
         return columns.slice(numFixedColumns, columns.get('length')) || [];
-      }).property('columns.@each', 'numFixedColumns'),
+      }).property('columns.[]', 'numFixedColumns'),
 
       prepareTableColumns: function() {
         var _this = this;
@@ -346,10 +340,10 @@ var define, requireModule, require, requirejs;
         var antiscrollElements = this.$('.antiscroll-wrap');
         var antiscroll;
         antiscrollElements.each(function(i, antiscrollElement) {
-          antiscroll = $(antiscrollElement).data('antiscroll');
+          antiscroll = Ember.$(antiscrollElement).data('antiscroll');
           if (antiscroll) {
             antiscroll.destroy();
-            $(antiscrollElement).removeData('antiscroll');
+            Ember.$(antiscrollElement).removeData('antiscroll');
           }
         });
         this._super();
@@ -364,7 +358,7 @@ var define, requireModule, require, requirejs;
         if (this.tableWidthNowTooSmall()) {
           this.set('columnsFillTable', true);
         }
-        return Ember.run(this, this.elementSizeDidChange);
+        Ember.run(this, this.elementSizeDidChange);
       },
 
       elementSizeDidChange: function() {
@@ -375,7 +369,7 @@ var define, requireModule, require, requirejs;
         this.set('_height', this.$().parent().height());
         // we need to wait for the table to be fully rendered before antiscroll can
         // be used
-        return Ember.run.next(this, this.updateLayout);
+        Ember.run.next(this, this.updateLayout);
       },
 
       tableWidthNowTooSmall: function() {
@@ -396,7 +390,7 @@ var define, requireModule, require, requirejs;
         // updating antiscroll
         this.$('.antiscroll-wrap').antiscroll().data('antiscroll').rebuild();
         if (this.get('columnsFillTable')) {
-          return this.doForceFillColumns();
+          this.doForceFillColumns();
         }
       },
 
@@ -442,8 +436,8 @@ var define, requireModule, require, requirejs;
       },
 
       onBodyContentLengthDidChange: Ember.observer(function() {
-        return Ember.run.next(this, function() {
-          return Ember.run.once(this, this.updateLayout);
+        Ember.run.next(this, function() {
+          Ember.run.once(this, this.updateLayout);
         });
       }, 'bodyContent.length'),
 
@@ -646,7 +640,8 @@ var define, requireModule, require, requirejs;
 
               this.get('rangeSelection').addObjects(
                 this.get('bodyContent').slice(minIndex, maxIndex + 1)
-                .mapBy('content'));
+                .mapBy('content')
+              );
             } else {
               if (!event.ctrlKey && !event.metaKey) {
                 this.get('persistedSelection').clear();
@@ -694,6 +689,12 @@ var define, requireModule, require, requirejs;
           return view.get('row');
         }
         return null;
+      },
+
+      // TODO(azirbel): Document
+      actions: {
+        addColumn: Ember.K,
+        sortByColumn: Ember.K
       }
     });
   });
@@ -719,10 +720,11 @@ var define, requireModule, require, requirejs;
         }
         return Ember.String.dasherize("" + styleName) + ":" + value + ";";
       },
-      applyStyleBindings: function() {
+      applyStyleBindings: Ember.on('init',
+        Ember.observer('styleBindings', function() {
         var lookup, properties, styleBindings, styleComputed, styles,
           _this = this;
-        styleBindings = this.styleBindings;
+        styleBindings = this.get('styleBindings');
         if (!styleBindings) {
           return;
         }
@@ -750,11 +752,7 @@ var define, requireModule, require, requirejs;
         });
         styleComputed.property.apply(styleComputed, properties);
         return Ember.defineProperty(this, 'style', styleComputed);
-      },
-      init: function() {
-        this.applyStyleBindings();
-        return this._super();
-      }
+      }))
     });
   });
 ;define("ember-table/mixins/resize-handler", 
@@ -1555,7 +1553,7 @@ var define, requireModule, require, requirejs;
       scrollLeft: null,
 
       onScrollLeftDidChange: Ember.observer(function() {
-        return this.$().scrollLeft(this.get('scrollLeft'));
+        this.$().scrollLeft(this.get('scrollLeft'));
       }, 'scrollLeft'),
 
       height: Ember.computed(function() {
@@ -1631,7 +1629,7 @@ var define, requireModule, require, requirejs;
       // jQuery UI resizable option
       resizableOption: Ember.computed(function() {
         return {
-          handles: 'e',
+          handles: 'e', // Show the "east"/"right" handle
           // We need about 10px as absolute minimums for the columns
           minWidth: Math.max(this.get('effectiveMinWidth') || 0, 10),
           maxWidth: this.get('effectiveMaxWidth'),
@@ -1643,6 +1641,7 @@ var define, requireModule, require, requirejs;
       }).property('effectiveMinWidth', 'effectiveMaxWidth'),
 
       didInsertElement: function() {
+        // TODO(azirbel): Call this._super()
         this.elementSizeDidChange();
         this.recomputeResizableHandle();
       },
@@ -1690,27 +1689,27 @@ var define, requireModule, require, requirejs;
         Ember.$('.ember-table-header-block .ember-table-content').each(function() {
           var thisHeight = Ember.$(this).outerHeight();
           if (thisHeight > maxHeight) {
-            return maxHeight = thisHeight;
+            maxHeight = thisHeight;
           }
         });
-        return this.set('tableComponent._contentHeaderHeight', maxHeight);
+        this.set('tableComponent._contentHeaderHeight', maxHeight);
       },
 
       cellWidthDidChange: Ember.observer(function() {
-        return Ember.run.schedule('afterRender', this, this.elementSizeDidChange);
+        Ember.run.schedule('afterRender', this, this.elementSizeDidChange);
       }, 'width'),
 
       resizableObserver: Ember.observer(function() {
-        return this.recomputeResizableHandle();
+        this.recomputeResizableHandle();
       }, 'resizableOption', 'column.isResizable', 'tableComponent.columnMode',
           'nextResizableColumn'),
 
       recomputeResizableHandle: function() {
         if (this.get('_isResizable')) {
-          return this.$().resizable(this.get('resizableOption'));
+          this.$().resizable(this.get('resizableOption'));
         } else {
           if (this.$().is('.ui-resizable')) {
-            return this.$().resizable('destroy');
+            this.$().resizable('destroy');
           }
         }
       }
@@ -1964,8 +1963,8 @@ var define, requireModule, require, requirejs;
       scrollTop: null,
 
       onScrollLeftDidChange: Ember.observer(function() {
-        return this.$().scrollLeft(this.get('scrollLeft'));
-      }).observes('scrollLeft')
+        this.$().scrollLeft(this.get('scrollLeft'));
+      }, 'scrollLeft')
     });
   });
 ;define("ember-table/views/multi-item-collection", 
@@ -2080,7 +2079,7 @@ var define, requireModule, require, requirejs;
       init: function() {
         this._super();
         this.contentPathDidChange();
-        return this.contentDidChange();
+        this.contentDidChange();
       },
 
       row: Ember.computed.alias('parentView.row'),
@@ -2088,24 +2087,24 @@ var define, requireModule, require, requirejs;
       width: Ember.computed.alias('column.width'),
 
       contentDidChange: function() {
-        return this.notifyPropertyChange('cellContent');
+        this.notifyPropertyChange('cellContent');
       },
 
       contentPathWillChange: Ember.beforeObserver(function() {
         var contentPath = this.get('column.contentPath');
         if (contentPath) {
-          return this.removeObserver("row." + contentPath, this,
+          this.removeObserver("row." + contentPath, this,
               this.contentDidChange);
         }
-      }).observes('column.contentPath'),
+      }, 'column.contentPath'),
 
       contentPathDidChange: Ember.beforeObserver(function() {
         var contentPath = this.get('column.contentPath');
         if (contentPath) {
-          return this.addObserver("row." + contentPath, this,
+          this.addObserver("row." + contentPath, this,
               this.contentDidChange);
         }
-      }).observes('column.contentPath'),
+      }, 'column.contentPath'),
 
       cellContent: Ember.computed(function(key, value) {
         var row = this.get('row');
